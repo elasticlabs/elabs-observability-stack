@@ -40,7 +40,7 @@ services:
       - minio
     networks:
       - grafana
-      
+
   # -> 3 ingesters
   ingester-0:
     image: grafana/tempo:latest
@@ -48,7 +48,7 @@ services:
     restart: unless-stopped
     command: "-target=ingester -config.file=/etc/tempo.yaml"
     volumes:
-      - ./tempo.yaml:/etc/tempo.yaml
+      - ./grafana/tempo.yaml:/etc/tempo.yaml
     expose:
       - "14268"  # jaeger ingest
       - "3200"   # tempo
@@ -64,7 +64,7 @@ services:
     restart: unless-stopped
     command: "-target=ingester -config.file=/etc/tempo.yaml"
     volumes:
-      - ./tempo.yaml:/etc/tempo.yaml
+      - ./grafana/tempo.yaml:/etc/tempo.yaml
     expose:
       - "14268"  # jaeger ingest
       - "3200"   # tempo
@@ -80,7 +80,7 @@ services:
     restart: unless-stopped
     command: "-target=ingester -config.file=/etc/tempo.yaml"
     volumes:
-      - ./tempo.yaml:/etc/tempo.yaml
+      - ./grafana/tempo.yaml:/etc/tempo.yaml
     expose:
       - "14268"  # jaeger ingest
       - "3200"   # tempo
@@ -102,7 +102,7 @@ services:
     entrypoint:
       - sh
       - -euc
-      - mkdir -p /data/tempo && /usr/bin/minio server /data
+      - mkdir -p /data/tempo && minio server /data
     networks:
       - grafana
 
