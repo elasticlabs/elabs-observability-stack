@@ -18,7 +18,7 @@ help:
 	@echo "         https://github.com/elasticlabs/elabs-observability-stack "
 	@echo " "
 	@echo "Hints for developers:"
-	@echo "  make build         # Makes container & volumes cleanup, and builds TEAMEngine"
+	@echo "  make build         # Makes container & volumes cleanup, and builds the stack"
 	@echo "  make up            # With working proxy, brings up the testing infrastructure"
 	@echo "  make update        # Update the whole stack"
 	@echo "  make hard-cleanup  # Hard cleanup of images, containers, networks, volumes & data"
@@ -27,10 +27,8 @@ help:
 .PHONY: up
 up: 
 	@bash ./.utils/message.sh info "[INFO] Bringing up the Grafana stack"
-	# Set server_name in reverse proxy and grafana config file
-	sed -i "s/changeme/$(GRAFANA_URL)/" ./proxy/grafana-stack.conf
-	sed -i "s/changeme/$(GRAFANA_URL)/" ./grafana/grafana.ini
-
+	@make build
+	
 	@bash ./.utils/message.sh info "[INFO] The following URL is detected : $(GRAFANA_URL). It should be reachable for proper operation"
 	nslookup $(GRAFANA_URL) && echo "        -> nslookup OK!"
 
@@ -40,9 +38,10 @@ up:
 .PHONY: build
 build:
 	@bash ./.utils/message.sh info "[INFO] Building the Grafana stack"
-	# Set server_name in reverse proxy
-	sed -i "s/changeme/$(GRAFANA_URL)/" ./proxy/grafana-stack.conf 
-
+	# Set server_name in reverse proxy and grafana config file
+	sed -i "s/changeme/$(GRAFANA_URL)/" ./proxy/grafana-revproxy.conf
+	sed -i "s/changeme/$(GRAFANA_URL)/" ./grafana/grafana.ini
+	
 	docker-compose -f docker-compose.yml build
  
 .PHONY: update
