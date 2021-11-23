@@ -22,6 +22,7 @@ services:
     networks:
       - https-revproxy
       - grafana
+
   #
   # Grafana stack
   distributor:
@@ -39,6 +40,7 @@ services:
       - minio
     networks:
       - grafana
+      
   # -> 3 ingesters
   ingester-0:
     image: grafana/tempo:latest
@@ -124,6 +126,11 @@ services:
     image: prom/prometheus:latest
     container_name: ${COMPOSE_PROJECT_NAME}_prometheus
     restart: unless-stopped
+    depends_on:
+      - loki
+      - ingester-0
+      - ingester-1
+      - ingester-2
     volumes:
       - ./grafana/prometheus.yaml:/etc/prometheus.yaml
     entrypoint:
@@ -138,6 +145,8 @@ services:
     image: grafana/loki:2.4.0
     container_name: ${COMPOSE_PROJECT_NAME}_loki
     restart: unless-stopped
+    depends_on:
+      - promtail
     expose:
       - "3100"
     command: -config.file=/etc/loki/local-config.yaml
@@ -158,6 +167,10 @@ services:
     image: grafana/grafana:7.4.2
     container_name: ${COMPOSE_PROJECT_NAME}_grafana
     restart: unless-stopped
+    depends_on:
+      - prometheus
+      - distributor
+      - nginx-entrypoint
     volumes:
       - ./grafana/datasources/:/etc/grafana/provisioning/datasources/
       - ./grafana/dashboards-provisioning/:/etc/grafana/provisioning/dashboards/
