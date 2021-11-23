@@ -31,7 +31,7 @@ services:
     restart: unless-stopped
     command: "-target=distributor -config.file=/etc/tempo.yaml"
     volumes:
-      - ./tempo.yaml:/etc/tempo.yaml
+      - ./grafana/tempo.yaml:/etc/tempo.yaml
     expose:
       - "14268"  # jaeger ingest
       - "3200"   # tempo
