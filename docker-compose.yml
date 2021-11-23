@@ -196,3 +196,5 @@ networks:
     external:
       name: ${APPS_NETWORK}
   grafana:
+    external:
+      name: ${GRAFANA_NETWORK}

@@ -8,6 +8,7 @@ SHELL         = /bin/bash
 # For cleanup, get Compose project name from .env file
 DC_PROJECT?=$(shell cat .env | sed 's/.*=//')
 GRAFANA_URL?=$(shell cat .env | grep GRAFANA_VHOST | sed 's/.*=//')
+GRAFANA_NETWORK?=$(shell cat .env | grep -v ^\# | grep GRAFANA_NETWORK | sed 's/.*=//')
 CURRENT_DIR?= $(shell pwd)
 
 # Every command is a PHONY, to avoid file naming confliction.
@@ -33,11 +34,15 @@ up:
 	@bash ./.utils/message.sh info "[INFO] The following URL is detected : $(GRAFANA_URL). It should be reachable for proper operation"
 	nslookup $(GRAFANA_URL)
 	docker-compose -f docker-compose.yml up -d --build --remove-orphans
+	@make urls
 
 .PHONY: build
 build:
 	@bash ./.utils/message.sh info "[INFO] Building the Grafana stack"
 	git stash && git pull
+	# Network creation if not done yet
+	@bash ./.utils/message.sh info "[INFO] Create ${GRAFANA_NETWORK} network if it doesn't already exist."
+	docker network inspect ${GRAFANA_NETWORK} >/dev/null 2>&1 || docker network create --driver bridge ${GRAFANA_NETWORK}
 	# Set server_name in reverse proxy and grafana config file
 	sed -i "s/changeme/$(GRAFANA_URL)/" ./proxy/grafana-revproxy.conf
 	sed -i "s/changeme/$(GRAFANA_URL)/" ./grafana/grafana.ini
