@@ -112,7 +112,7 @@ services:
     container_name: ${COMPOSE_PROJECT_NAME}_loadgenerator
     restart: unless-stopped
     volumes:
-      - ./load-generator.json:/etc/load-generator.json
+      - ./grafana/load-generator.json:/etc/load-generator.json
     environment:
       - TOPOLOGY_FILE=/etc/load-generator.json
       - JAEGER_COLLECTOR_URL=http://distributor:14268
@@ -128,7 +128,7 @@ services:
     container_name: ${COMPOSE_PROJECT_NAME}_prometheus
     restart: unless-stopped
     volumes:
-      - ./prometheus.yaml:/etc/prometheus.yaml
+      - ./grafana/prometheus.yaml:/etc/prometheus.yaml
     entrypoint:
       - /bin/prometheus
       - --config.file=/etc/prometheus.yaml
@@ -165,6 +165,7 @@ services:
       - ./grafana/datasources/:/etc/grafana/provisioning/datasources/
       - ./grafana/dashboards-provisioning/:/etc/grafana/provisioning/dashboards/
       - ./grafana/dashboards/:/var/lib/grafana/dashboards/
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin

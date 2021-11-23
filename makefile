@@ -30,8 +30,9 @@ up:
 	@make build
 	
 	@bash ./.utils/message.sh info "[INFO] The following URL is detected : $(GRAFANA_URL). It should be reachable for proper operation"
-	nslookup $(GRAFANA_URL) && echo "        -> nslookup OK!"
+	nslookup $(GRAFANA_URL)
 
+	@make wait
 	git stash && git pull
 	docker-compose -f docker-compose.yml up -d --build --remove-orphans
 
@@ -65,4 +66,4 @@ urls:
 
 .PHONY: wait
 wait: 
-	sleep 5
+	sleep 3
