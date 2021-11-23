@@ -28,17 +28,16 @@ help:
 up: 
 	@bash ./.utils/message.sh info "[INFO] Bringing up the Grafana stack"
 	@make build
-	
+	@make wait
+
 	@bash ./.utils/message.sh info "[INFO] The following URL is detected : $(GRAFANA_URL). It should be reachable for proper operation"
 	nslookup $(GRAFANA_URL)
-
-	@make wait
-	git stash && git pull
 	docker-compose -f docker-compose.yml up -d --build --remove-orphans
 
 .PHONY: build
 build:
 	@bash ./.utils/message.sh info "[INFO] Building the Grafana stack"
+	git stash && git pull
 	# Set server_name in reverse proxy and grafana config file
 	sed -i "s/changeme/$(GRAFANA_URL)/" ./proxy/grafana-revproxy.conf
 	sed -i "s/changeme/$(GRAFANA_URL)/" ./grafana/grafana.ini
@@ -66,4 +65,4 @@ urls:
 
 .PHONY: wait
 wait: 
-	sleep 3
+	sleep 5

@@ -180,11 +180,11 @@ services:
     container_name: ${COMPOSE_PROJECT_NAME}_cadvisor
     restart: unless-stopped
     expose:
-    - "8080"
+      - "8080"
     volumes:
-    - /var/lib/docker/:/var/lib/docker:ro
-    - /var/run/docker.sock:/var/run/docker.sock:ro
-    - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys:/sys:ro
     networks:
       - grafana
 
