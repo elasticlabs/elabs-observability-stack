@@ -15,7 +15,7 @@ services:
       - DHPARAM_GENERATION=false
       - VIRTUAL_PORT=80
       - VIRTUAL_HOST=${GRAFANA_VHOST}
-      - LETSENCRYPT_HOST=${TE_VHOST}
+      - LETSENCRYPT_HOST=${GRAFANA_VHOST}
       - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
@@ -25,7 +25,7 @@ services:
   #
   # Grafana stack
   distributor:
-    image: tempo:latest
+    image: grafana/tempo:latest
     container_name: ${COMPOSE_PROJECT_NAME}_distributor
     restart: unless-stopped
     command: "-target=distributor -config.file=/etc/tempo.yaml"
@@ -41,7 +41,7 @@ services:
       - grafana
   # -> 3 ingesters
   ingester-0:
-    image: tempo:latest
+    image: grafana/tempo:latest
     container_name: ${COMPOSE_PROJECT_NAME}_ingester_0
     restart: unless-stopped
     command: "-target=ingester -config.file=/etc/tempo.yaml"
@@ -58,7 +58,7 @@ services:
       - grafana
 
   ingester-1:
-    image: tempo:latest
+    image: grafana/tempo:latest
     container_name: ${COMPOSE_PROJECT_NAME}_ingester-1
     restart: unless-stopped
     command: "-target=ingester -config.file=/etc/tempo.yaml"
@@ -75,7 +75,7 @@ services:
       - grafana
   
   ingester-2:
-    image: tempo:latest
+    image: grafana/tempo:latest
     container_name: ${COMPOSE_PROJECT_NAME}_ingester_2
     restart: unless-stopped
     command: "-target=ingester -config.file=/etc/tempo.yaml"
